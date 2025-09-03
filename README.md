@@ -1,14 +1,14 @@
-# Turborepo starter
+# Token Verification Using Email
 
-This Turborepo starter is maintained by the Turborepo core team.
+A secure authentication system built with Node.js/Express API and Next.js frontend that implements email-based user verification using JWT tokens.
 
-## Using this example
+## Features
 
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+- **Email-based registration**: Users sign up with just an email address
+- **JWT token verification**: Secure token-based email verification system
+- **Automatic user creation**: Users are created only after successful email verification
+- **Secure authentication**: HTTP-only cookies for session management
+- **Full-stack application**: Express API backend with Next.js frontend
 
 ## What's inside?
 
@@ -16,11 +16,13 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `api`: Express.js API server with authentication endpoints and email verification
+- `web`: Next.js frontend application for user interface
+- `@repo/ui`: Shared React component library
+- `@repo/eslint-config`: ESLint configurations for code consistency
+- `@repo/typescript-config`: TypeScript configurations used throughout the monorepo
+- `@repo/prisma-client`: Database client for user management
+- `@repo/redis-client`: Redis client for caching (if needed)
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -32,104 +34,128 @@ This Turborepo has some additional tools already setup for you:
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 18
+- Bun (package manager)
+- PostgreSQL database
+- Email service configuration (SMTP)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd TokenVerifyUsingEmail
+```
+
+2. Install dependencies:
+```bash
+bun install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
+Configure your `.env` file with:
+- `JWT_SECRET`: Secret key for JWT token signing
+- `DATABASE_URL`: PostgreSQL connection string
+- `BASE_URL`: Your application's base URL
+- Email service credentials (SMTP)
+
+4. Set up the database:
+```bash
+bunx prisma migrate dev
+```
+
+### Development
+
+To start all apps in development mode:
+
+```bash
+bun run dev
+```
+
+To develop specific apps:
+
+```bash
+# API server only
+bun run dev --filter=api
+
+# Frontend only  
+bun run dev --filter=web
+```
+
 ### Build
 
-To build all apps and packages, run the following command:
+To build all apps and packages:
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+bun run build
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+To build specific packages:
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+```bash
+# Build API only
+bun run build --filter=api
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+# Build web app only
+bun run build --filter=web
 ```
 
-### Develop
+## API Endpoints
 
-To develop all apps and packages, run the following command:
+### Authentication
 
-```
-cd my-turborepo
+- `POST /api/v1/user/signup` - Register with email (sends verification email)
+- `GET /api/v1/user/verify-email?token=<token>` - Verify email and create account
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+## How It Works
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+1. **User Registration**: User provides email address
+2. **Email Verification**: System sends verification email with JWT token
+3. **Token Validation**: User clicks email link, token is verified
+4. **Account Creation**: Upon successful verification, user account is created
+5. **Authentication**: User is automatically logged in with secure HTTP-only cookie
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+## Project Structure
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+apps/
+├── api/                 # Express.js API server
+│   ├── src/
+│   │   ├── controllers/ # Route handlers
+│   │   ├── middleware/  # Express middleware
+│   │   └── index.ts     # Server entry point
+│   └── package.json
+├── web/                 # Next.js frontend
+│   ├── src/
+│   │   ├── app/         # Next.js app router
+│   │   └── components/  # React components
+│   └── package.json
+packages/
+├── ui/                  # Shared UI components
+├── eslint-config/       # ESLint configuration
+└── typescript-config/   # TypeScript configuration
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## Security Features
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- JWT tokens with expiration (24 hours)
+- HTTP-only secure cookies
+- Email format validation
+- Environment-based security settings
+- Protection against duplicate registrations
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+## Built With
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- **Backend**: Node.js, Express.js, Prisma ORM
+- **Frontend**: Next.js, React
+- **Database**: PostgreSQL
+- **Email**: Nodemailer
+- **Authentication**: JWT + HTTP-only cookies
+- **Build System**: Turborepo + Bun
