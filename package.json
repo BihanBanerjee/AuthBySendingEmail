@@ -1,5 +1,5 @@
 {
-  "name": "2Sep",
+  "name": "contest-2sep",
   "private": true,
   "scripts": {
     "build": "turbo run build",

@@ -1,0 +1,20 @@
+{
+  "name": "@repo/prisma-client",
+  "type": "module",
+  "private": true,
+  "main": "index.ts",
+  "module": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prisma": "^6.15.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.15.0"
+  }
+}
