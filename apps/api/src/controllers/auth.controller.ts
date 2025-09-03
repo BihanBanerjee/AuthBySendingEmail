@@ -54,9 +54,9 @@ export const signUp = async (req: Request, res: Response) => {
         }
 
         const token = generateVerificationToken(email)
-        const verifyUrl = `${process.env.BASE_URL}/api/auth/verify-email?token=${token}`
+        const verifyUrl = `${process.env.BASE_URL}/api/v1/user/verify-email?token=${token}`
         
-        await transporter.sendMail({
+        const info = await transporter.sendMail({
             from: '"Super30 Contest" <banerjeebihan456@gmail.com>',
             to: email,
             subject: "Verify your email address",
